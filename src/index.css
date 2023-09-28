@@ -11,3 +11,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+@font-face {
+  font-family: "FreightBigPro";
+  src: local("FreightBigPro"),
+   url("./fonts/FreightBigPro/FreigBigProBol.otf") format("truetype");
+  font-weight: bold;
+ }
+
+ @font-face {
+  font-family: "Gotham";
+  src: local("Gotham"),
+   url("./fonts/Gotham/Gotham-Bold.otf") format("truetype");
+  font-weight: bold;
+ }
+ @font-face {
+  font-family: "GothamLight";
+  src: local("GothamLight"),
+   url("./fonts/Gotham/Gotham-Light.otf") format("truetype");
+  font-weight: bold;
+ }
+ 
