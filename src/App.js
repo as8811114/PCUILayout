@@ -19,12 +19,12 @@ class App extends Component {
         Rubores: "-",
       },
       selectedItem: {
-        Labiales: "",
-        Máscaras: "",
-        Bases: "",
-        Polvos: "",
-        Delineadores: "",
-        Rubores: "",
+        Labiales: 0,
+        Máscaras: 0,
+        Bases: 0,
+        Polvos: 0,
+        Delineadores: 0,
+        Rubores: 0,
       },
       series: [],
       data: [],
@@ -33,12 +33,13 @@ class App extends Component {
   }
   handleClickCategory = (category) => {
     this.getOptions(category);
-    this.getData(category, this.state.selectedTable[category]);
+    this.getSeries(category, this.state.selectedTable[category]);
     this.setState({ categorySelected: category });
   };
   handleClickSubCategory = (category, subCategory) => {
     this.getOptions(category);
-    this.getData(category, subCategory);
+    this.getSeries(category, subCategory);
+    this.updateItemSelect(category, 0);
     this.setState({
       selectedTable: {
         ...this.state.selectedTable,
@@ -46,9 +47,24 @@ class App extends Component {
       },
     });
   };
+  handleItemIndex = (category, direction) => {
+    this.setState({
+      selectedItem: {
+        ...this.state.selectedItem,
+        [`${category}`]: this.state.selectedItem[category] - direction,
+      },
+    });
+  };
+  updateItemSelect = (category, item) => {
+    console.log(category);
+    console.log(item);
+    this.setState({
+      selectedItem: { ...this.state.selectedItem, [`${category}`]: item },
+    });
+  };
   componentDidMount = () => {
     this.getOptions("Labiales");
-    this.getData("Labiales", "Rojos");
+    this.getSeries("Labiales", "Rojos");
   };
 
   getOptions = (category) => {
@@ -64,16 +80,16 @@ class App extends Component {
       (d) => d.Category === category && d.SubCategory === subcategory
     );
     this.getSeries(filterData);
-    this.setState({
-      data: filterData,
-    });
   };
-  getSeries = (data) => {
-    console.log(data);
+  getSeries = (category, subcategory) => {
+    const filterData = data.filter(
+      (d) => d.Category === category && d.SubCategory === subcategory
+    );
+
     let checkGUID = [];
     let series = [];
-    console.log(data);
-    for (let x of data) {
+
+    for (let x of filterData) {
       if (!checkGUID.includes(x.GUID.slice(0, -3))) {
         checkGUID.push(x.GUID.slice(0, -3));
         series.push(x);
@@ -122,6 +138,9 @@ class App extends Component {
           data={this.state.data}
           options={this.state.options}
           series={this.state.series}
+          selectedItem={this.state.selectedItem[this.state.categorySelected]}
+          updateItemSelect={this.updateItemSelect}
+          handleItemIndex={this.handleItemIndex}
         ></Contents>
       </div>
     );

@@ -2,23 +2,23 @@ import { Component } from "react";
 import left from "./images/left.png";
 import right from "./images/right.png";
 import noImage from "./images/no-image-icon-23485.png";
-const data = ["1", "2", "3", "4", "5", "6"];
+
 export default class Item extends Component {
   constructor() {
     super();
-    this.state = { item: 0 };
-    this.itemWidh = 182;
+    this.itemWidth = 182;
   }
   handleItemsMove = (type) => {
-    console.log(this.itemWidh);
     const direction = type === "left" ? -1 : 1;
     const items = document.getElementById("items");
+
     for (let x of items.childNodes) {
       x.style.transform = `translateX(${
-        -1 * this.itemWidh * this.state.item + this.itemWidh * direction
+        -1 * this.itemWidth * this.props.selectedItem +
+        this.itemWidth * direction
       }px)`;
     }
-    this.setState({ item: this.state.item - direction });
+    this.props.handleItemIndex(this.props.series[0].Category, direction);
   };
   adjustItems = () => {
     const items = document.getElementById("items");
@@ -33,14 +33,25 @@ export default class Item extends Component {
     for (let x of items.childNodes) {
       x.style.width = newWidth + "px";
     }
-    if (newWidth >= 182) left.style.width = right.style.width = "138px";
-    else
+    if (newWidth >= 182) {
+      left.style.width = right.style.width = "138px";
+      this.itemWidth = 182;
+      console.log(`newWidth:${this.itemWidth}`);
+    } else {
       left.style.width = right.style.width = `calc((100% - ${newWidth}px) / 2)`;
-    this.itemWidh = newWidth;
+      this.itemWidth = newWidth;
+    }
   };
   addWindowListener = () => {
     window.addEventListener("resize", () => {
       this.adjustItems();
+      //handle resize items offset
+      const items = document.getElementById("items");
+      for (let x of items.childNodes) {
+        x.style.transform = `translateX(${
+          -1 * this.itemWidth * this.props.selectedItem
+        }px)`;
+      }
     });
 
     window.addEventListener("load", () => {
@@ -50,6 +61,9 @@ export default class Item extends Component {
 
   componentDidMount = () => {
     this.addWindowListener();
+  };
+  componentDidUpdate = () => {
+    this.adjustItems();
   };
   render() {
     return (
@@ -74,7 +88,7 @@ export default class Item extends Component {
             boxSizing: "border-box",
           }}
         >
-          {this.state.item !== 0 && (
+          {this.props.selectedItem !== 0 && (
             <button
               style={{
                 cursor: "pointer",
@@ -102,7 +116,7 @@ export default class Item extends Component {
               ></img>
             </button>
           )}
-          {this.state.item !== this.props.series.length - 1 && (
+          {this.props.selectedItem < this.props.series.length - 1 && (
             <button
               style={{
                 cursor: "pointer",
@@ -167,9 +181,13 @@ export default class Item extends Component {
                     width: "182px",
                     minWidth: "150px",
                     maxWidth: "182px",
-                    border: "1px solid black",
+                    border:
+                      i === this.props.selectedItem ? "1px solid black" : "",
                     boxSizing: "border-box",
                     cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    this.props.handleItemClick(i);
                   }}
                 >
                   <div
