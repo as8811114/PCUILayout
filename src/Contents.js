@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import selectArrow from "./images/selectArrow.png";
 
-import Item from "./Item";
 import Colors from "./Colors";
+import Item from "./Item";
 
 export default class Page extends Component {
   constructor(props) {
@@ -27,21 +27,18 @@ export default class Page extends Component {
       }
     });
   };
-  handleItemClick = (index) => {
-    console.log(index);
-    this.props.updateItemSelect(this.props.category, index);
+  handleItemSelect = (item) => {
+    this.props.handleItemSelect(item);
   };
-  handleItemIndex = (category, direction) => {
-    this.props.handleItemIndex(category, direction);
+  handleItemIndex = (direction) => {
+    this.props.handleItemIndex(direction);
   };
   getColors = () => {};
   componentDidMount = () => {
     this.addWindowListener();
   };
 
-  componentDidUpdate = () => {
-    console.log(this.props);
-  };
+  componentDidUpdate = () => {};
   render() {
     return (
       <div
@@ -182,12 +179,13 @@ export default class Page extends Component {
         {/*items*/}
         <Item
           series={this.props.series}
-          selectedItem={this.props.selectedItem}
-          handleItemClick={this.handleItemClick}
+          handleItemSelect={this.handleItemSelect}
           handleItemIndex={this.handleItemIndex}
+          itemSelected={this.props.itemSelected}
+          itemIndex={this.props.itemIndex}
         ></Item>
         {/* item colors */}
-        <Colors selectedItem={this.props.selectedItem}></Colors>
+        <Colors colors={this.props.colors}></Colors>
       </div>
     );
   }

@@ -11,6 +11,12 @@ const colors = [
   "#73441e",
 ];
 export default class Colors extends Component {
+  constructor(props) {
+    super(props);
+  }
+  componentDidMount() {
+    console.log(this.props);
+  }
   render() {
     return (
       <div
@@ -59,7 +65,7 @@ export default class Colors extends Component {
               }}
             ></div>
           </a>
-          {colors.map((c, i) => {
+          {this.props.colors.map((c, i) => {
             return (
               <a
                 key={i}
@@ -79,7 +85,7 @@ export default class Colors extends Component {
                     boxSizing: "border-box",
                     backgroundPosition: "center center",
                     margin: "6px",
-                    backgroundColor: `${c}`,
+                    backgroundColor: `${c.Color}`,
                     border: "2px solid black",
                     borderRadius: "2px",
                     backgroundClip: "content-box",

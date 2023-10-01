@@ -1,7 +1,7 @@
 import { Component } from "react";
 import left from "./images/left.png";
-import right from "./images/right.png";
 import noImage from "./images/no-image-icon-23485.png";
+import right from "./images/right.png";
 
 export default class Item extends Component {
   constructor() {
@@ -14,11 +14,10 @@ export default class Item extends Component {
 
     for (let x of items.childNodes) {
       x.style.transform = `translateX(${
-        -1 * this.itemWidth * this.props.selectedItem +
-        this.itemWidth * direction
+        -1 * this.itemWidth * this.props.itemIndex + this.itemWidth * direction
       }px)`;
     }
-    this.props.handleItemIndex(this.props.series[0].Category, direction);
+    this.props.handleItemIndex(direction);
   };
   adjustItems = () => {
     const items = document.getElementById("items");
@@ -46,23 +45,26 @@ export default class Item extends Component {
     window.addEventListener("resize", () => {
       this.adjustItems();
       //handle resize items offset
-      const items = document.getElementById("items");
-      for (let x of items.childNodes) {
-        x.style.transform = `translateX(${
-          -1 * this.itemWidth * this.props.selectedItem
-        }px)`;
-      }
+      this.focusSelectedItem();
     });
 
     window.addEventListener("load", () => {
       this.adjustItems();
     });
   };
-
+  focusSelectedItem = () => {
+    const items = document.getElementById("items");
+    for (let x of items.childNodes) {
+      x.style.transform = `translateX(${
+        -1 * this.itemWidth * this.props.itemIndex
+      }px)`;
+    }
+  };
   componentDidMount = () => {
     this.addWindowListener();
   };
   componentDidUpdate = () => {
+    this.focusSelectedItem();
     this.adjustItems();
   };
   render() {
@@ -88,7 +90,7 @@ export default class Item extends Component {
             boxSizing: "border-box",
           }}
         >
-          {this.props.selectedItem !== 0 && (
+          {this.props.itemIndex > 0 && (
             <button
               style={{
                 cursor: "pointer",
@@ -116,7 +118,7 @@ export default class Item extends Component {
               ></img>
             </button>
           )}
-          {this.props.selectedItem < this.props.series.length - 1 && (
+          {this.props.itemIndex < this.props.series.length - 1 && (
             <button
               style={{
                 cursor: "pointer",
@@ -182,12 +184,14 @@ export default class Item extends Component {
                     minWidth: "150px",
                     maxWidth: "182px",
                     border:
-                      i === this.props.selectedItem ? "1px solid black" : "",
+                      d.GUID === this.props.itemSelected
+                        ? "1px solid black"
+                        : "",
                     boxSizing: "border-box",
                     cursor: "pointer",
                   }}
                   onClick={() => {
-                    this.props.handleItemClick(i);
+                    this.props.handleItemSelect(d);
                   }}
                 >
                   <div

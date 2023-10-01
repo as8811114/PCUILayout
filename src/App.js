@@ -1,9 +1,9 @@
 import { Component } from "react";
+import Category from "./Category";
 import Contents from "./Contents";
 import Header from "./Header";
-import Category from "./Category";
-import image from "./images/look.png";
 import data from "./data";
+import image from "./images/look.png";
 class App extends Component {
   constructor() {
     super();
@@ -19,27 +19,35 @@ class App extends Component {
         Rubores: "-",
       },
       selectedItem: {
-        Labiales: 0,
-        Máscaras: 0,
-        Bases: 0,
-        Polvos: 0,
-        Delineadores: 0,
-        Rubores: 0,
+        Labiales: "BCC-21056_20181024_LS_06_19",
+        Máscaras: "BCC-21056_20181025_LA_02_01",
+        Bases: "BCC-21056_20181109_FD_02_01",
+        Polvos: "BCC-21056_20181025_FD_03_01",
+        Delineadores: "BCC-21056_20181025_LI_01_01",
+        Rubores: "BCC-21056_20181025_BL_01_01",
       },
+      itemIndex: 0,
       series: [],
       data: [],
       options: [],
+      colors: [],
     };
   }
   handleClickCategory = (category) => {
     this.getOptions(category);
+    this.getColors(
+      category,
+      this.state.selectedTable[`${this.state.categorySelected}`]
+    );
     this.getSeries(category, this.state.selectedTable[category]);
     this.setState({ categorySelected: category });
   };
   handleClickSubCategory = (category, subCategory) => {
     this.getOptions(category);
     this.getSeries(category, subCategory);
-    this.updateItemSelect(category, 0);
+    this.getColors(category, subCategory);
+    this.handleItemSelect(category, 0);
+    this.updateChangeSubCateItem(category, subCategory);
     this.setState({
       selectedTable: {
         ...this.state.selectedTable,
@@ -47,26 +55,30 @@ class App extends Component {
       },
     });
   };
-  handleItemIndex = (category, direction) => {
+  handleItemIndex = (direction) => {
+    this.setState({ itemIndex: this.state.itemIndex - direction });
+  };
+  //handle select Item
+  handleItemSelect = (item) => {
+    console.log("select");
+    this.getColors(
+      this.state.categorySelected,
+      this.state.selectedTable[`${this.state.categorySelected}`]
+    );
     this.setState({
       selectedItem: {
         ...this.state.selectedItem,
-        [`${category}`]: this.state.selectedItem[category] - direction,
+        [`${item.Category}`]: item.GUID,
       },
     });
   };
-  updateItemSelect = (category, item) => {
-    console.log(category);
-    console.log(item);
-    this.setState({
-      selectedItem: { ...this.state.selectedItem, [`${category}`]: item },
-    });
-  };
+
   componentDidMount = () => {
     this.getOptions("Labiales");
     this.getSeries("Labiales", "Rojos");
+    this.getColors("Labiales", "Rojos");
   };
-
+  //get select option
   getOptions = (category) => {
     let subCategoryOptions = new Set();
     let dateAfterFilter = data.filter((d) => d.Category === category);
@@ -75,12 +87,8 @@ class App extends Component {
     }
     this.setState({ options: Array.from(subCategoryOptions) });
   };
-  getData = (category, subcategory) => {
-    const filterData = data.filter(
-      (d) => d.Category === category && d.SubCategory === subcategory
-    );
-    this.getSeries(filterData);
-  };
+
+  //Get SubCategory should show how many series
   getSeries = (category, subcategory) => {
     const filterData = data.filter(
       (d) => d.Category === category && d.SubCategory === subcategory
@@ -95,8 +103,54 @@ class App extends Component {
         series.push(x);
       }
     }
-    this.setState({ series: series });
-    console.log(series);
+    let i = 0;
+
+    for (i = 0; i < series.length; i++) {
+      if (
+        this.state.selectedItem[category].includes(series[i].GUID.slice(0, -3))
+      )
+        break;
+    }
+    this.setState({ series: series, data: filterData, itemIndex: i });
+  };
+  getColors = (category, subcategory) => {
+    const filterData = data.filter(
+      (d) => d.Category === category && d.SubCategory === subcategory
+    );
+    let colors = [];
+    console.log(this.state.selectedItem[`${category}`]);
+    for (let x of filterData) {
+      if (
+        x.GUID.slice(0, -3).includes(
+          this.state.selectedItem[`${category}`].slice(0, -3)
+        )
+      )
+        colors.push(x);
+    }
+    this.setState({ colors: colors });
+  };
+  //set itemIndex to 0 when subCategory change
+  updateChangeSubCateItem = (category, subcategory) => {
+    const filterData = data.filter(
+      (d) => d.Category === category && d.SubCategory === subcategory
+    );
+
+    let checkGUID = [];
+    let series = [];
+
+    for (let x of filterData) {
+      if (!checkGUID.includes(x.GUID.slice(0, -3))) {
+        checkGUID.push(x.GUID.slice(0, -3));
+        series.push(x);
+      }
+    }
+    this.setState({
+      selectedItem: {
+        ...this.state.selectedItem,
+        [`${category}`]: series[0].GUID,
+      },
+      itemIndex: 0,
+    });
   };
 
   render() {
@@ -135,12 +189,13 @@ class App extends Component {
           category={this.state.categorySelected}
           subCategory={this.state.selectedTable[this.state.categorySelected]}
           handleClickSubCategory={this.handleClickSubCategory}
-          data={this.state.data}
+          colors={this.state.colors}
           options={this.state.options}
           series={this.state.series}
-          selectedItem={this.state.selectedItem[this.state.categorySelected]}
-          updateItemSelect={this.updateItemSelect}
+          handleItemSelect={this.handleItemSelect}
           handleItemIndex={this.handleItemIndex}
+          itemIndex={this.state.itemIndex}
+          itemSelected={this.state.selectedItem[this.state.categorySelected]}
         ></Contents>
       </div>
     );
