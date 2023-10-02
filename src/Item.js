@@ -35,7 +35,6 @@ export default class Item extends Component {
     if (newWidth >= 182) {
       left.style.width = right.style.width = "138px";
       this.itemWidth = 182;
-      console.log(`newWidth:${this.itemWidth}`);
     } else {
       left.style.width = right.style.width = `calc((100% - ${newWidth}px) / 2)`;
       this.itemWidth = newWidth;
@@ -66,6 +65,9 @@ export default class Item extends Component {
   componentDidUpdate = () => {
     this.focusSelectedItem();
     this.adjustItems();
+    console.log(
+      this.props.colors.filter((e) => e.GUID === this.props.colorSelected)[0]
+    );
   };
   render() {
     return (
@@ -184,7 +186,7 @@ export default class Item extends Component {
                     minWidth: "150px",
                     maxWidth: "182px",
                     border:
-                      d.GUID === this.props.itemSelected
+                      d.GUID.slice(0, -3) === this.props.itemSelected
                         ? "1px solid black"
                         : "",
                     boxSizing: "border-box",
@@ -235,7 +237,12 @@ export default class Item extends Component {
                       }}
                     >
                       <div style={{ fontSize: "12px", lineHeight: "14px" }}>
-                        {d.Tone}
+                        {this.props.colorSelected &&
+                        d.GUID.slice(0, -3) === this.props.itemSelected
+                          ? this.props.colors.filter(
+                              (e) => e.GUID === this.props.colorSelected
+                            )[0].Tone
+                          : d.Tone}
                       </div>
                       <div style={{ height: "8px" }}></div>
                       <div

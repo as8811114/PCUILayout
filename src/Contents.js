@@ -9,7 +9,6 @@ export default class Page extends Component {
     super(props);
     this.state = {
       selectOpen: false,
-      colors: [],
     };
   }
 
@@ -33,7 +32,10 @@ export default class Page extends Component {
   handleItemIndex = (direction) => {
     this.props.handleItemIndex(direction);
   };
-  getColors = () => {};
+  handleColorSelect = (color) => {
+    this.props.handleColorSelect(color);
+  };
+
   componentDidMount = () => {
     this.addWindowListener();
   };
@@ -183,9 +185,16 @@ export default class Page extends Component {
           handleItemIndex={this.handleItemIndex}
           itemSelected={this.props.itemSelected}
           itemIndex={this.props.itemIndex}
+          colors={this.props.colors}
+          colorSelected={this.props.colorSelected}
         ></Item>
         {/* item colors */}
-        <Colors colors={this.props.colors}></Colors>
+        <Colors
+          colors={this.props.colors}
+          handleColorSelect={this.handleColorSelect}
+          itemSelected={this.props.itemSelected}
+          colorSelected={this.props.colorSelected}
+        ></Colors>
       </div>
     );
   }
