@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/PCUILayout/static/css/main.c3698e59.css",
+    "main.js": "/PCUILayout/static/js/main.11dd1424.js",
+    "static/media/FreigBigProBol.otf": "/PCUILayout/static/media/FreigBigProBol.197ada44b92ebb220f25.otf",
+    "static/media/Gotham-Bold.otf": "/PCUILayout/static/media/Gotham-Bold.cdc8119b8e7e97c66b68.otf",
+    "static/media/Gotham-Light.otf": "/PCUILayout/static/media/Gotham-Light.4c8ecdf2bb4be56add8c.otf",
+    "static/media/Dalmatins.ttf": "/PCUILayout/static/media/Dalmatins.676a5cfd082079b5843f.ttf",
+    "index.html": "/PCUILayout/index.html",
+    "main.c3698e59.css.map": "/PCUILayout/static/css/main.c3698e59.css.map",
+    "main.11dd1424.js.map": "/PCUILayout/static/js/main.11dd1424.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c3698e59.css",
+    "static/js/main.11dd1424.js"
+  ]
+}
